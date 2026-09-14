@@ -5,11 +5,11 @@
 # the domain it touches, because an agent will trust what it says.
 
 # Default: the developer program owner
-*                   @MARCO_GITHUB_HANDLE
+*                   @marcopasqual
 
 # Capability map: engineering review required per domain (CORE-10266).
 # Add one line per domain section as reviewers are named on CORE-10250.
-/CAPABILITIES.md    @MARCO_GITHUB_HANDLE @FRANK_GITHUB_HANDLE
+/CAPABILITIES.md    @marcopasqual @andrew-ip-videri
 
 # Authentication content: the auth / RPM domain owner reviews
-/AUTH.md            @MARCO_GITHUB_HANDLE @FRANK_GITHUB_HANDLE
+/AUTH.md            @marcopasqual @andrew-ip-videri @frank-gao-videri
