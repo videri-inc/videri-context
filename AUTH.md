@@ -6,22 +6,24 @@ portal article "Authenticating with your API Key" (Knowledge Base). That article
 is canonical; if this file and the article disagree, the article wins and this
 file has a bug. Open a pull request.
 
-Status: v0, drafted 14 Sep 2026 (CORE-10261). Sections marked TBD are waiting
-on CORE-10260.
+Status: v0, drafted 14 Sep 2026 (CORE-10261). Access model confirmed 14 Sep
+2026 (CORE-10260).
 
 ## Getting access
 
 - **A developer portal account is a Videri Portal account.** Same username and
   password, same environment. If you can sign in to the Videri Portal for an
-  environment, you can sign in to that environment's developer portal.
-- **If you do not have a user yet**, either ask someone in your organization
-  who already has portal access to create one for you, or request one from
-  Videri customer support, who will validate the request with an admin of your
-  tenant.
-- **Internal Videri builders** work on the **sandbox** environment against the
-  internal builders' sandbox tenant.
-  Tenant code: **TBD (CORE-10260)**. Tenant admin who creates users: **TBD
-  (CORE-10260)**. Never build or test against a customer's production tenant.
+  environment, you can sign in to that environment's developer portal. There
+  is no separate sign-up.
+- **Customers and partners** already have this: sign in with the Videri Portal
+  login your organization uses. If you have no Videri Portal user at all,
+  contact Videri customer support, who validates the request with an admin of
+  your tenant and creates the user.
+- **Internal Videri builders** already have Videri Portal access through the
+  **Videri** or **Videri Sales** tenant. Sign in to the developer portal with
+  those credentials; there is nothing to request. Build on the **sandbox**
+  environment and only against one of those two tenants. Never build or test
+  against a customer's tenant.
 - **Your tenant code(s)**: the Profile tab of your developer portal dashboard
   lists the tenants you belong to. The same list is in the `tenants` claim of
   your `id_token`. Use the code exactly as shown.
