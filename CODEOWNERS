@@ -4,12 +4,15 @@
 # Everything needs one review. CAPABILITIES.md needs an engineering reviewer for
 # the domain it touches, because an agent will trust what it says.
 
-# Default: the developer program owner
-*                   @marcopasqual
+# Curators of the context pack: Marco, Andrew Ip, Frank Gao. Nobody else merges.
+*                   @marcopasqual @andrew-ip-videri @frank-gao-videri
 
 # Capability map: engineering review required per domain (CORE-10266).
-# Add one line per domain section as reviewers are named on CORE-10250.
-/CAPABILITIES.md    @marcopasqual @andrew-ip-videri
+/CAPABILITIES.md    @marcopasqual @andrew-ip-videri @frank-gao-videri
 
 # Authentication content: the auth / RPM domain owner reviews
 /AUTH.md            @marcopasqual @andrew-ip-videri @frank-gao-videri
+
+# Harvested knowledge: curated by the three above; contributors open issues, not PRs
+/GOTCHAS.md         @marcopasqual @andrew-ip-videri @frank-gao-videri
+/DECISIONS.md       @marcopasqual @andrew-ip-videri @frank-gao-videri

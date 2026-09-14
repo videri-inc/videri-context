@@ -29,9 +29,10 @@ Every duplicated contract is a future contradiction.
 
 ## Contributing
 
-Open a pull request. Before you do, run `REDACTION.md` against your change and
-tick the boxes in the PR template. Changes to `CAPABILITIES.md` need an
-engineering reviewer for the domain (see `CODEOWNERS`).
+The pack is curated by the owners in `CODEOWNERS`. If you are one of them:
+open a pull request, run `REDACTION.md` against your change and tick the boxes
+in the PR template. Everyone else: open an issue with what you found, using the
+template at the bottom of `GOTCHAS.md`, and a curator will add it.
 
 ## Related
 

@@ -88,9 +88,11 @@ what moves a build from prototype to validated recipe.
 
 ## Feedback loop
 
-Every time the portal or this pack failed to tell you something, that gap is a
-pull request: add an entry to `GOTCHAS.md` using the template inside it, or
-tell the developer program working group. The pack improves only through use.
+Every time the portal or this pack failed to tell you something, that gap is
+worth recording: open an issue on this repository describing the symptom and
+what you had to find out, using the template at the bottom of `GOTCHAS.md`.
+The curators listed in `CODEOWNERS` turn issues into entries. The pack improves
+only through use.
 
 ## Getting access
 

@@ -7,8 +7,9 @@ rather than retyping endpoints.
 
 Status: v0 seed, 14 Sep 2026. The entries below come from Videri's internal
 reference client and from the developer portal's own articles. Entries from
-harvest sessions with the fastest builders follow (CORE-10259, CORE-10265). Add
-yours with the template at the bottom.
+harvest sessions with the fastest builders follow (CORE-10259, CORE-10265).
+This file is curated by the owners listed in `CODEOWNERS`; if you hit a gap,
+open an issue using the template at the bottom and a curator will add it.
 
 ---
 
@@ -142,6 +143,6 @@ yours with the template at the bottom.
 - **Example**: one concrete request, value or message.
 ```
 
-Open a pull request with the entry. If the gap is in the portal itself (an
-article or the Start here page), say so in the PR so a portal ticket can be
-opened as well.
+Open an issue with the entry filled in; a curator turns it into a pull request.
+If the gap is in the portal itself (an article or the Start here page), say so
+so a portal ticket can be opened as well.
