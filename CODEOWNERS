@@ -1,0 +1,15 @@
+# CODEOWNERS for videri-context
+#
+# Replace the placeholders with GitHub handles before the first pull request.
+# Everything needs one review. CAPABILITIES.md needs an engineering reviewer for
+# the domain it touches, because an agent will trust what it says.
+
+# Default: the developer program owner
+*                   @MARCO_GITHUB_HANDLE
+
+# Capability map: engineering review required per domain (CORE-10266).
+# Add one line per domain section as reviewers are named on CORE-10250.
+/CAPABILITIES.md    @MARCO_GITHUB_HANDLE @FRANK_GITHUB_HANDLE
+
+# Authentication content: the auth / RPM domain owner reviews
+/AUTH.md            @MARCO_GITHUB_HANDLE @FRANK_GITHUB_HANDLE
