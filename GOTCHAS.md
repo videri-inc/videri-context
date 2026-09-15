@@ -8,8 +8,11 @@ rather than retyping endpoints.
 Status: v0 seed, 14 Sep 2026. The first entries come from Videri's internal
 reference client and from the developer portal's own articles. The entries
 under "From harvest 1" come from the written field notes of the SparkSustain
-build (a desktop presence app, macOS and Windows, 22 Aug to 14 Sep 2026) and
-were reviewed by a curator (CORE-10259, CORE-10265). Entries marked
+build (a desktop presence app, macOS and Windows, 22 Aug to 14 Sep 2026); the
+entries under "From harvest 2" come from the written business feedback on the
+menu-board family of builds (QSR, hotel, corporate, reseller, venue and media
+network interfaces sharing one integration layer, Aug to Sep 2026). All were
+reviewed by a curator (CORE-10259, CORE-10265). Entries marked
 **unverified** were reported, not reproduced; verify with a probe call before
 relying on them.
 This file is curated by the owners listed in `CODEOWNERS`; if you hit a gap,
@@ -312,6 +315,185 @@ open an issue using the template at the bottom and a curator will add it.
   in line). No rate limit is documented; 5 to 10 concurrent `sync_command`
   calls have been fine, larger fleets are a guess.
 - **Example**: ten-minute reconcile loop.
+
+---
+
+## From harvest 2 (menu-board family field notes)
+
+## Some services want `access_token`, not `id_token` (unverified)
+
+- **Symptom**: Canvas Status `/status/fetch_all` and Metrics `/metrics/fetch_all`
+  answer 401 or 403 to a Bearer `id_token` that every other service accepts.
+- **Cause**: reported by one build, which retries those two calls with the
+  `access_token` and succeeds. Not reproduced by a curator yet.
+- **What to do**: keep `id_token` as the default (see harvest 1). If a status
+  or metrics call fails with 401/403 and the tenant header is right, try the
+  `access_token` once and report the case so the auth matrix can be fixed.
+- **Example**: `Authorization: Bearer <access_token>` on `/status/fetch_all` only.
+
+## Reading a workspace does not mean you can publish to it
+
+- **Symptom**: `GET` canvases in a child workspace works; `POST` a Publisher
+  event with the same `x-group` returns 403.
+- **Cause**: event creation is authorised at a different level than reads.
+  Some builds only succeed with the root workspace or with tenant-level
+  context.
+- **What to do**: when a publish 403s, retry once with the workspace you are
+  actually entitled to publish in (root, then tenant context), and only
+  following an explicit 403. Do not widen scope by default in a multi-tenant
+  product. Ask for the permission matrix (CORE-10302) rather than guessing.
+- **Example**: 403 on child `x-group`, 200 on root `x-group`, same token.
+
+## Single-event `POST` can 403 where `/events/batch` succeeds
+
+- **Symptom**: creating one Publisher event is forbidden; the same credentials
+  create it through the batch endpoint.
+- **Cause**: unknown; observed and recorded in one build's source comments.
+- **What to do**: create events through `POST .../events/batch` even for one
+  event; read the created events back afterwards.
+- **Example**: batch body with a one-element `events` array.
+
+## A batch response is not proof the events exist
+
+- **Symptom**: the batch call returns 200 and a later list does not show the
+  events, or shows different targets.
+- **Cause**: responses can be arrays or nested records under several keys, and
+  processing can be delayed.
+- **What to do**: persist the returned identifiers, then `GET .../events/{uuid}`
+  or the target's event list and verify identity, content and window before
+  retiring the events you are replacing.
+- **Example**: create, read back, then delete the old ones, in that order.
+
+## Library image URLs can 403; use the asset's canonical blob
+
+- **Symptom**: two preview image URLs from a CMS list return 403 with a valid
+  token.
+- **Cause**: list payloads can carry URLs that are not the authoritative media
+  reference.
+- **What to do**: read the scoped asset detail and select its canonical
+  original blob; use that URL for preview and native playback.
+- **Example**: `GET /cms/api/v1/assets/{uuid}` then the original blob URL.
+
+## `save_url` returns 403 for tenant users
+
+- **Symptom**: the documented `save_url` demo command is forbidden whatever
+  credentials you try.
+- **Cause**: it is on the platform's privileged-command list (with the shell,
+  clock, relay, server, package and firmware verbs), which ordinary tenant
+  roles cannot call.
+- **What to do**: do not build background preload on it. Use native
+  scheduling and cached playback; if you need silent preload, raise it as a
+  platform request.
+- **Example**: 403 on `save_url`; `set_brightness:=N` on the same device works.
+
+## CMS playlist lists stop at 100 unless you page
+
+- **Symptom**: a library with more than 100 playlists shows exactly 100.
+- **Cause**: the default read is one page; there is no "all".
+- **What to do**: page with a stable ordering (`uuid:ASC` worked), 50 rows at
+  a time, deduplicate by id, and keep the pages you already have if a later
+  page fails. Flag results as partial when you stop early.
+- **Example**: `size=50&sort=uuid:ASC&page=0..n`.
+
+## Playlist durations go in the `assetlist`, in milliseconds
+
+- **Symptom**: a playlist plays but every item shows for the default time.
+- **Cause**: item order and duration live on
+  `PATCH /cms/api/v1/playlists/{uuid}/assetlist`, not on playlist creation.
+  Each entry needs `asset_type`, `childUuid` and `duration` in ms. A video's
+  duration comes from its native metadata, not from an image dwell time.
+- **What to do**: create the playlist, persist its UUID at once, then PATCH
+  the ordered list.
+- **Example**: `{ "asset_type": "image", "childUuid": "...", "duration": 10000 }`.
+
+## An upload is not usable until processing finishes
+
+- **Symptom**: an asset you just created is missing from a playlist or fails
+  to render.
+- **Cause**: `POST /cms/api/v1/assets` creates an upload record; bytes go to
+  the returned signed destination; the asset is then processed.
+- **What to do**: wait for the processed state before referencing the asset,
+  verify its identity and tags, and reuse the existing asset after a delay
+  rather than uploading a second copy.
+- **Example**: poll the asset detail until it is ready, then build the playlist.
+
+## Proof of play is an asynchronous query
+
+- **Symptom**: the proof-of-play call returns "processing", not a report.
+- **Cause**: you request a query (`/canvas/proof_of_play/{hardwareDeviceId}?start=&end=`)
+  and poll it by `queryId` until the report is ready.
+- **What to do**: treat it as evidence of what played, fetched later; it is
+  not a synchronous "is the screen correct" answer, and it does not measure
+  audience or attention.
+- **Example**: request, receive `queryId`, poll `/{hardwareDeviceId}/{queryId}`.
+
+## A screenshot is only evidence if it is fresh
+
+- **Symptom**: the screenshot shows the right content; the screen does not.
+- **Cause**: stored screenshots can be old. Only `Last-Modified` tells you.
+- **What to do**: apply a freshness threshold (one build uses five minutes),
+  and request a new capture with the `get_screenshot:=true` demo command when
+  stale. Installation photos and thumbnails are not live evidence.
+- **Example**: reject a capture whose `Last-Modified` is older than 5 minutes.
+
+## Five identifiers, five APIs
+
+- **Symptom**: joins between inventory, status, metrics and publisher silently
+  mismatch.
+- **Cause**: canvas id (numeric), device JID, hardware serial, player id and
+  workspace (group) id serve different services and are not interchangeable.
+  Matching everything by one field produced fragile joins.
+- **What to do**: keep all of them on your canvas record; join each service on
+  the field it actually uses.
+- **Example**: status by player identity, metrics by hardware id, publisher
+  by numeric canvas id.
+
+## Walls are native topology, not a label
+
+- **Symptom**: four screens you named after venues are still one wall, and a
+  wall event targets all of them.
+- **Cause**: wall membership and geometry live in Canvas Service
+  (`POST /walls` with an `ids` array); venue or workspace names do not change
+  it.
+- **What to do**: resolve walls explicitly from inventory, never infer
+  topology from names, and keep wall membership visible even when no wall
+  event is active. Wall content needs verified geometry and member order.
+- **Example**: `POST /canvas-service/walls?page=0&size=500` with `{ "ids": [...] }`.
+
+## Never add 24 hours to make "tomorrow"
+
+- **Symptom**: an overnight or multi-day schedule is off by an hour twice a year.
+- **Cause**: daylight-saving changes. Recurrence uses `MON`..`SUN` with hour
+  parts and `startTime` / `endTime`; the user's inclusive last day becomes an
+  exclusive next-midnight boundary in your interval maths.
+- **What to do**: do all date arithmetic in the estate's IANA timezone with a
+  proper library; move the date and the weekday together for overnight windows.
+- **Example**: Europe/London, last Sunday in October.
+
+## Layout schemas disagree with each other
+
+- **Symptom**: `components` is an object in one CMS layout schema and a
+  nullable array in another; the PATCH prose says fields are optional while
+  `EditLayoutDTO` requires `name` and `orientation`.
+- **Cause**: the published layout DTOs are inconsistent and do not define
+  component internals (types, transforms, fonts, groups, media, widgets).
+- **What to do**: work from a native example layout read back from the API,
+  not from the schema alone. Browser fonts, animation and crop behaviour do
+  not automatically survive native conversion; a saved layout may reference a
+  `referAsset` of type layout with no media blob. CORE-10291 tracks the fix.
+- **Example**: read an existing layout with `GET /cms/api/v1/layouts/{uuid}`
+  and copy its component shape.
+
+## "Published" is not "on the screen"
+
+- **Symptom**: schedule accepted, content downloaded, device online, and the
+  screen shows something else.
+- **Cause**: scheduling success, delivery and playback are separate states
+  with separate evidence.
+- **What to do**: verify delivery separately (fresh screenshot, proof of play,
+  event readback) and keep your UI language honest: "scheduled", not
+  "playing", until you have evidence.
+- **Example**: a rolled-back job must not still say "switching".
 
 ---
 
