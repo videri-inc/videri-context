@@ -3,9 +3,11 @@
 The context pack for building on the Videri platform: what a builder or a
 coding agent needs to know that the API contracts do not say.
 
-**Status: internal preview.** Private to Videri while the developer program
-validates it with internal builders. It becomes public after two cold-start
-tests pass and the redaction checklist has run clean for two weeks.
+**Status: public preview.** Curated by Videri's developer program. Entries
+marked **unverified** were reported by builders and not yet reproduced by a
+curator. Contributions arrive as issues, not pull requests; see the bottom of
+`GOTCHAS.md`. Licensed under CC BY 4.0 (see `LICENSE`); code samples inside
+these documents may be used without attribution.
 
 ## Files
 

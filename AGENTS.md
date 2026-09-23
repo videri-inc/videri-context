@@ -5,7 +5,7 @@ people who direct them. It is the canonical instruction file for this repository
 and for building on the Videri REST API. `CLAUDE.md` in this repository is a
 one-line pointer here; do not maintain a separate copy.
 
-Status: internal preview (Videri employees). Not yet public.
+Status: public preview. Curated by Videri's developer program.
 
 ## What Videri is, in three sentences
 
@@ -40,8 +40,8 @@ environment.
 | Developer portal (accounts, API keys, articles, Swagger) | `https://developer.<env>.videri.com`, agent index at `/llms.txt` |
 | API contracts | `/openapi/index.json` on the portal, one entry per service with an absolute spec URL |
 | Token endpoint | `POST {API_BASE_URL}/rpm-service/v2/auth/token`, see `AUTH.md` |
-| Starter kit | `github.com/videri-inc/videri-starter` (internal preview) |
-| Validated recipes | `github.com/videri-inc/videri-recipes` (internal preview) |
+| Starter kit | `github.com/videri-inc/videri-starter` (public preview, v0 in progress) |
+| Validated recipes | `github.com/videri-inc/videri-recipes` (public preview, first recipe in progress) |
 | Conformance checklist | `videri-recipes/CONFORMANCE.md` |
 
 Never retype an endpoint, parameter, field name or enum value from memory or

@@ -378,9 +378,8 @@ open an issue using the template at the bottom and a curator will add it.
 
 - **Symptom**: the documented `save_url` demo command is forbidden whatever
   credentials you try.
-- **Cause**: it is on the platform's privileged-command list (with the shell,
-  clock, relay, server, package and firmware verbs), which ordinary tenant
-  roles cannot call.
+- **Cause**: it is a privileged device command that ordinary tenant roles
+  cannot call.
 - **What to do**: do not build background preload on it. Use native
   scheduling and cached playback; if you need silent preload, raise it as a
   platform request.
